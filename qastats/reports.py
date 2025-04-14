@@ -34,7 +34,7 @@ def create_return_dd(data=None,live_start_date=None,dark=False,name=None):
     if dark == True:
         plt.style.use('dark_background')
 
-    iDisplay(iHTML('<h4>JCX@QA-2023 - ALL RIGTHS RESERVED</h4>'))
+    iDisplay(iHTML('<h4> [JCX] - QUANTARMY </h4>'))
 
 
     if live_start_date is not None:

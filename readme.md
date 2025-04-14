@@ -1,6 +1,6 @@
-# QAStats V2
+# QAStats V3
 ### by JCX | JCX[x]QUANTARMY.COM | QUANTARMY.COM
-### V2.0.1
+### V3.0.1
 
 Pandas-based library for financial reporting. Using empyrical and pyfolio backgrounds for develop customized lib.
 
@@ -8,6 +8,9 @@ Pandas-based library for financial reporting. Using empyrical and pyfolio backgr
 In this file its an example of basic working.
 
 /src/qastats/examples/example1.ipynb
+
+# Mision
+Use this library as you want, adapt de code to your goals, and success with it!
 
 # Output
 

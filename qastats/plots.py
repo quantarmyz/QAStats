@@ -141,7 +141,7 @@ def plot_ref(ax, dark, **kwargs):
     ax.set_ylim(0,1)
     ax.set_xlim(0,1)
     ax.text(0.5, 0.9, 'QUANTARMY', fontname='Source Code Pro', weight='bold', ha='center', size=46, color='blue')
-    ax.text(0.5, 0.8, 'QAMGF: QuantArmy Module for Generate Factsheets - version:0.1-beta', weight='bold', ha='center', size=12, color=color1)
+    ax.text(0.5, 0.8, 'QAMGF: QuantArmy Module for Generate Factsheets - version:3.01', weight='bold', ha='center', size=12, color=color1)
     ax.text(0.5, 0.70, 'ALL RIGHTS RESERVED - CLASSIFICATED INFORMATION : UNDER NDA AGREEGEMENT', ha='center', size=8, color=color2)
     ax.text(0.5, 0.75, 'This report has disclaimer and disclosures, for more information contact with jcx@quantarmy.com', ha='center', size=8, color=color3)
     ax.axis('off')

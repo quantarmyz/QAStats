@@ -24,6 +24,63 @@ from scipy.stats import norm
 from IPython.display import display_html 
 qs.extend_pandas()
 
+def calculate_sqn(returns):
+    """
+    Calcula el System Quality Number (SQN) para una serie de retornos.
+
+    Parameters
+    ----------
+    returns : pd.Series
+        Serie de retornos diarios no acumulados.
+
+    Returns
+    -------
+    sqn : float
+        El valor del SQN calculado.
+    """
+    if len(returns) == 0:
+        raise ValueError("La serie de retornos está vacía.")
+
+    mean_returns = returns.mean()
+    std_returns = returns.std()
+    n = len(returns)
+
+    if std_returns == 0:
+        raise ValueError("La desviación estándar de los retornos es cero, no se puede calcular el SQN.")
+
+    sqn = (mean_returns / std_returns) * (n ** 0.5)
+    return sqn
+
+def calculate_omega_ratio(returns, threshold=0):
+    """
+    Calcula el Omega Ratio para una serie de retornos.
+
+    Parameters
+    ----------
+    returns : pd.Series
+        Serie de retornos diarios no acumulados.
+    threshold : float, optional
+        Umbral de retorno (por defecto 0).
+
+    Returns
+    -------
+    omega_ratio : float
+        El Omega Ratio calculado.
+    """
+    if len(returns) == 0:
+        raise ValueError("La serie de retornos está vacía.")
+
+    # Retornos por encima y por debajo del umbral
+    excess_returns = returns - threshold
+    gains = excess_returns[excess_returns > 0].sum()
+    losses = -excess_returns[excess_returns < 0].sum()
+
+    if losses == 0:
+        return np.inf  # Si no hay pérdidas, el Omega Ratio es infinito
+
+    omega_ratio = gains / losses
+    return omega_ratio
+
 def get_daily_stats(data):
     """
     Obtiene todas las estadisticas relevantes. En timeframe diario,y devuelve un dataframe con las soluciones, y lo displayea en pantalla.
@@ -62,7 +119,8 @@ def get_daily_stats(data):
         'Max DD':round(data.max_drawdown() * 100 ,2),
         'Calmar Ratio': data.calmar()[0],
         'Sortino Ratio':qs.stats.sortino(data['Close']),
-        #'Omega Ratio':qs.stats.omega(data[['Close']]),
+        'SQN': calculate_sqn(returns=data['Close']),
+        'Omega Ratio':calculate_omega_ratio(returns=data['Close']),
         'Skew':data['Close'].skew(),
         'Kurt':data['Close'].kurt(),
         'VaR':round(data.value_at_risk()[0] * 100,2),
@@ -142,7 +200,7 @@ def get_montly_stats(data,display=True):
         'Sharpe Ratio':data.sharpe(periods=12)[0],
         'Calmar Ratio': data.calmar()[0],
         'Sortino Ratio':qs.stats.sortino(data['Close'],periods=12),
-        #'Omega Ratio':qs.stats.omega(data[['Close']],periods=12),
+        'Omega Ratio':calculate_omega_ratio(returns=data['Close']),
         'Skew':data['Close'].skew(),
         'Kurt':data['Close'].kurt(),
         'VaR':data.value_at_risk()[0],
