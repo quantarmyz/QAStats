@@ -2,8 +2,7 @@ pandas
 numpy
 matplotlib
 seaborn
-scipy
 empyrical-reloaded
-quantstats
 pyfolio-reloaded
 ffn
+git+https://github.com/nextdorf/quantstats.git

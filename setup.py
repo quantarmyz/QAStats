@@ -25,7 +25,6 @@ setup(
         "empyrical-reloaded",
         "pyfolio-reloaded",
         "ffn",
-        "git+https://github.com/nextdorf/quantstats.git"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
