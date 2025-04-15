@@ -4,11 +4,19 @@
 
 Pandas-based library for financial reporting. Using empyrical and pyfolio backgrounds for develop customized lib.
 
-# Example
 
 
 # Mision
 Use this library as you want, adapt de code to your goals, and success with it!
+
+## Instalación
+
+Clona el repositorio y usa `pip` para instalar:
+
+```bash
+git clone https://github.com/quantarmyz/QAStats
+cd qastats
+pip install .
 
 # Output
 

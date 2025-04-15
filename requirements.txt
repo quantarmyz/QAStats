@@ -1,0 +1,9 @@
+pandas
+numpy
+matplotlib
+seaborn
+scipy
+empyrical-reloaded
+quantstats
+pyfolio-reloaded
+ffn
