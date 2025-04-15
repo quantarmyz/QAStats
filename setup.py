@@ -23,9 +23,9 @@ setup(
         "matplotlib",
         "seaborn",
         "empyrical-reloaded",
-        "quantstats",
         "pyfolio-reloaded",
-        "ffn"
+        "ffn",
+        "git+https://github.com/nextdorf/quantstats.git"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
