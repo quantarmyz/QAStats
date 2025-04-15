@@ -17,7 +17,7 @@ cd qastats
 pip install .
 
 # BUGFIXES
-
+Used FIX on quantstats until Ran fix the main code
 
 # Output
 
