@@ -8,7 +8,7 @@ if os.path.exists("README.md"):
         long_description = f.read()
 
 setup(
-    name="quantstats",
+    name="qastats",
     version="3.0.1",
     author="Jesus Cuesta",
     author_email="jcx@quantarmy.com",
