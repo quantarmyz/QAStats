@@ -463,7 +463,7 @@ def extract_interesting_date_ranges(returns, periods=PERIODS):
             if len(period) == 0:
                 continue
             ranges[name] = period
-        except BaseException:
+        except (ValueError, KeyError, IndexError):
             continue
 
     return ranges

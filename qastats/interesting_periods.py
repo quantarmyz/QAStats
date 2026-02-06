@@ -175,7 +175,7 @@ PERIODS["Fed Rate Hikes"] = (
 
 PERIODS["Russia-Ukraine War"] = (
     pd.Timestamp("20220224", tzinfo=dt.timezone.utc),
-    pd.Timestamp("today", tzinfo=dt.timezone.utc),
+    pd.Timestamp.now(tz=dt.timezone.utc),
 )
 
 PERIODS["Inflation Crisis"] = (
@@ -197,27 +197,22 @@ PERIODS["US Debt Ceiling Crisis 2023"] = (
     pd.Timestamp("20230602", tzinfo=dt.timezone.utc),  # Firma de la ley de suspensión
 )
 
-PERIODS["Russia-Ukraine War"] = (
-    pd.Timestamp("20220224", tzinfo=dt.timezone.utc),
-    pd.Timestamp("today", tzinfo=dt.timezone.utc),
-)
-
 PERIODS["Israel-Hamas War"] = (
     pd.Timestamp("20231007", tzinfo=dt.timezone.utc),
-    pd.Timestamp("today", tzinfo=dt.timezone.utc),
+    pd.Timestamp.now(tz=dt.timezone.utc),
 )
 
 PERIODS["AI Boom"] = (
     pd.Timestamp("20221130", tzinfo=dt.timezone.utc),  # Lanzamiento de ChatGPT
-    pd.Timestamp("today", tzinfo=dt.timezone.utc),
+    pd.Timestamp.now(tz=dt.timezone.utc),
 )
 
 PERIODS["Trump Victory 2024"] = (
     pd.Timestamp("20241105", tzinfo=dt.timezone.utc),
-    pd.Timestamp("today", tzinfo=dt.timezone.utc),
+    pd.Timestamp.now(tz=dt.timezone.utc),
 )
 
 PERIODS["Trump Tariffs Liberation Day"] = (
     pd.Timestamp("20250402", tzinfo=dt.timezone.utc),  # Announcement of Liberation Day tariffs
-    pd.Timestamp("today", tzinfo=dt.timezone.utc), 
+    pd.Timestamp.now(tz=dt.timezone.utc), 
 )
