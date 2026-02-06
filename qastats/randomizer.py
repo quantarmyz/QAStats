@@ -18,7 +18,6 @@
 import pandas as pd
 import numpy as np
 import datetime
-import datetime
 import ffn 
 
 def run_monte_carlo_parametric(returns,trading_days,simulations):    

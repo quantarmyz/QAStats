@@ -112,8 +112,8 @@ def get_daily_stats(data):
         'Total Return': qa.stats.cum_returns_final(data['Close'],100),
         'Factor Return':qa.stats.cum_returns_final(data['bench'],100),
         'Ret Corr with Factor':data['Close'].corr(data['bench'],method='kendall'),
-        'Ret Corr with Factor + ':data[data['Close']>0].corr(method='kendall')['Close']['bench'],
-        'Ret Corr with Factor -' :data[data['Close']<0].corr(method='kendall')['Close']['bench'],
+        'Ret Corr with Factor +':data[data['Close']>0].corr(method='kendall')['Close']['bench'],
+        'Ret Corr with Factor -':data[data['Close']<0].corr(method='kendall')['Close']['bench'],
         'CAGR':100 * data['Close'].cagr(),
         'Annualized Vol': 100 * qs.stats.volatility(data['Close']),
         'Max DD':round(data.max_drawdown() * 100 ,2),
@@ -157,9 +157,9 @@ def get_daily_stats(data):
     v_r = round_dict(v)
     stats = pd.DataFrame(v_r).T
     
-    return stats[['Close']]
+    return stats
 
-def get_montly_stats(data,display=True):
+def get_monthly_stats(data,display=True):
     """
     Obtiene todas las estadisticas relevantes. En timeframe Mensual,y devuelve un dataframe con las soluciones, y lo displayea en pantalla.
 
@@ -192,8 +192,8 @@ def get_montly_stats(data,display=True):
         'Total Return': data['Close'].cumsum()[-1],
         'Factor Return':data['bench'].cumsum()[-1],
         'Ret Corr with Factor':data['Close'].corr(data['bench'],method='kendall'),
-        'Ret Corr with Factor + ':'COOMING',
-        'Ret Corr with Factor -':'COOMING',
+        'Ret Corr with Factor +':data[data['Close']>0].corr(method='kendall')['Close']['bench'] if len(data[data['Close']>0]) > 0 else np.nan,
+        'Ret Corr with Factor -':data[data['Close']<0].corr(method='kendall')['Close']['bench'] if len(data[data['Close']<0]) > 0 else np.nan,
         'CAGR':data.cagr()[0],
         'Annualized Vol': qs.stats.volatility(data['Close']),
         'Max DD':data.max_drawdown()[0],
@@ -276,7 +276,6 @@ def get_vami_diario(pct):
         
     for i in range(1,len(matrix)):
         matrix['VAMI'][i] = matrix['VAMI'][i - 1] + (matrix['VAMI'][i - 1] * pct[i])
-    print('OK')
     return matrix
 
 def show_worst_drawdown_periods(returns, top=5,by='duration',show=False):

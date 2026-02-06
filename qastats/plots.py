@@ -29,7 +29,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pytz
-import scipy as sp
 import seaborn as sns
 from .stats import *
 from .timeseries import *
@@ -293,40 +292,6 @@ def plot_rolling_returns(
                     alpha=0.4)
     ax.set_title("Retornos Acumulados en (%)")
 
-    return ax
-
-    def plot_drawdown_underwater(returns, ax=None, **kwargs):
-        """
-    Plots how far underwaterr returns are over time, or plots current
-    drawdown vs. date.
-    Parameters
-    ----------
-    returns : pd.Series
-        Daily returns of the strategy, noncumulative.
-            - See full explanation in tears.create_full_tear_sheet.
-        ax : matplotlib.Axes, optional
-            Axes upon which to plot.
-        **kwargs, optional
-            Passed to plotting function.
-        Returns
-        -------
-        ax : matplotlib.Axes
-            The axes that were plotted on.
-        """
-
-    if ax is None:
-        ax = plt.gca()
-
-    y_axis_formatter = FuncFormatter(percentage)
-    ax.yaxis.set_major_formatter(FuncFormatter(y_axis_formatter))
-
-    df_cum_rets = ep.cum_returns(returns, starting_value=1.0)
-    running_max = np.maximum.accumulate(df_cum_rets)
-    underwater = -100 * ((running_max - df_cum_rets) / running_max)
-    underwater.plot(ax=ax, kind="area", color="blue", alpha=0.7, **kwargs)
-    ax.set_ylabel("Drawdown")
-    ax.set_title("Underwater")
-    ax.set_xlabel("QA - 2023")
     return ax
 
 def plot_monthly_returns_heatmap(returns, ax=None,marca_blanca=False, **kwargs):
@@ -713,7 +678,10 @@ def plot_rolling_volatility(
                     fontname='Source Code Pro',
                     weight='bold',
                     alpha=0.4)
-    ax.set_title("Rolling Volaility (6-Months) ratio corr:" + str(round(rolling_vol_ts.corr(rolling_vol_ts_factor),2)))
+    if factor_returns is not None:
+        ax.set_title("Rolling Volatility (6-Months) ratio corr:" + str(round(rolling_vol_ts.corr(rolling_vol_ts_factor),2)))
+    else:
+        ax.set_title("Rolling Volatility (6-Months)")
     return ax
 
     """
@@ -924,7 +892,10 @@ def plot_rolling_sharpe(
         )
         rolling_sharpe_ts_factor.plot(alpha=0.7, lw=2, color="grey", ax=ax, **kwargs)
 
-    ax.set_title("Sharpe ratio corr:" + str(round(rolling_sharpe_ts.corr(rolling_sharpe_ts_factor),2)))
+    if factor_returns is not None:
+        ax.set_title("Sharpe ratio corr:" + str(round(rolling_sharpe_ts.corr(rolling_sharpe_ts_factor),2)))
+    else:
+        ax.set_title("Rolling Sharpe Ratio (6-Months)")
     ax.axhline(rolling_sharpe_ts.mean(), color="orangered", linestyle="--", lw=2)
     ax.axhline(0.0, color="black", linestyle="--", lw=1, zorder=2)
 
@@ -991,7 +962,10 @@ def plot_rolling_var(
         )
         rolling_sharpe_ts_factor.plot(alpha=0.7, lw=2, color="grey", ax=ax, **kwargs)
 
-    ax.set_title("Rolling VaR ratio corr:" + str(round(rolling_sharpe_ts.corr(rolling_sharpe_ts_factor),2)))
+    if factor_returns is not None:
+        ax.set_title("Rolling VaR ratio corr:" + str(round(rolling_sharpe_ts.corr(rolling_sharpe_ts_factor),2)))
+    else:
+        ax.set_title("Rolling VaR Ratio (6-Months)")
     ax.axhline(rolling_sharpe_ts.mean(), color="orangered", linestyle="--", lw=2)
     ax.axhline(0.0, color="black", linestyle="--", lw=1, zorder=2)
 
@@ -1049,12 +1023,12 @@ def plot_rolling_var_usd(
     y_axis_formatter = FuncFormatter(two_dec_places)
     ax.yaxis.set_major_formatter(FuncFormatter(y_axis_formatter))
 
-    rolling_sharpe_ts = var_usd(returns.rolling(rolling_window))
+    rolling_sharpe_ts = returns.rolling(rolling_window).apply(var_usd)
     rolling_sharpe_ts = pd.DataFrame(rolling_sharpe_ts).dropna()
     rolling_sharpe_ts.plot(alpha=0.7, lw=2, color="royalblue", ax=ax, **kwargs)
 
     if factor_returns is not None:
-        rolling_sharpe_ts_factor = var_usd(factor_returns.rolling(rolling_window))
+        rolling_sharpe_ts_factor = factor_returns.rolling(rolling_window).apply(var_usd)
         rolling_sharpe_ts_factor = pd.DataFrame(rolling_sharpe_ts_factor).dropna()
         rolling_sharpe_ts_factor.plot(alpha=0.7, lw=2, color="grey", ax=ax, **kwargs)
 
@@ -1270,61 +1244,6 @@ def plot_drawdown_tops(df, dark, ax=None, **kwargs):
     ax.axis('off')  # Ocultar los ejes
     return ax
 
-def plot_drawdown_tops(df,dark, ax=None, **kwargs):
-    dds = show_worst_drawdown_periods(df,top=5,by='pct')
-    dds2 = show_worst_drawdown_periods(df,top=5,by='days')
-
-    if ax is None:
-        fig, ax = plt.subplots(figsize=(0.7,0.7))
-
-    if dark == True:
-        color1 = '#ff433d'
-        color2 = 'white'
-        color3 = '#fb8b1e'
-    else:
-        color1 = 'black'
-        color2 = 'black'
-        color3 = 'black'
-
-    ax.set_ylim(4.5,10)
-    ax.set_xlim(1, 9)
-    data = [] 
-    for i, row in dds.iterrows():
-        data.append({'Net DD in %': row['Net drawdown in %'], 'Duration':row['Duration'],'Peak date':row['Peak date'],'Valley date':row['Valley date'],'Recovery Date':row['Recovery date']})
-    ax.text(0.5,10.5, 'Top 5 DD by MaxDD',weight='bold', ha='left',color=color1)
-    ax.text(0.5 ,9.75, 'DD in %', weight='bold', ha='left',color=color2)
-    ax.text(1.75 ,9.75, 'Duration', weight='bold', ha='left',color=color2)
-    ax.text( 3.15,9.75, 'Peak Date', weight='bold', ha='left',color=color2)
-    ax.text(4.9 ,9.75, 'Valley Date', weight='bold', ha='left',color=color2)
-    ax.text(6.75 ,9.75, 'Recovery Date', weight='bold', ha='left',color=color2)
-    for row in range(len(dds)):
-        d = data[row]
-        ax.text(x=0.5, y=9.5 - (0.4 * row) , s=round(d['Net DD in %'],2), va='center', ha='left',color=color3)
-        ax.text(x=1.75, y=9.5 - (0.4 * row) , s=round(d['Duration'],2), va='center', ha='left',color=color3)
-        ax.text(x=3.15, y=9.5 - (0.4 * row) , s=d['Peak date'].date(), va='center', ha='left',color=color3)
-        ax.text(x=4.9, y=9.5 - (0.4 * row) , s=d['Valley date'].date(), va='center', ha='left',color=color3)
-        ax.text(x=6.75, y=9.5 - (0.4 * row) , s=d['Recovery Date'].date(), va='center', ha='left',color=color3)
-
-    data2 = []
-
-    for i, row in dds2.iterrows():
-        data2.append({'Net DD in %': row['Net drawdown in %'], 'Duration':row['Duration'],'Peak date':row['Peak date'],'Valley date':row['Valley date'],'Recovery Date':row['Recovery date']})
-    ax.text(0.5,7.25, 'Top 5 DD by days',weight='bold', ha='left',color=color1)
-    ax.text(0.5 ,6.75, 'DD in %', weight='bold', ha='left',color=color2)
-    ax.text(1.75 ,6.75, 'Duration', weight='bold', ha='left',color=color2)
-    ax.text(3.15 ,6.75, 'Peak Date', weight='bold', ha='left',color=color2)
-    ax.text(4.9 ,6.75, 'Valley Date', weight='bold', ha='left', color=color2)
-    ax.text(6.75 ,6.75, 'Recovery Date', weight='bold', ha='left' ,color=color2) 
-    for row in range(len(dds2)):
-        d = data2[row]
-        ax.text(x=0.5,  y=6.5 - (0.4*row), s=round(d['Net DD in %'],2), va='center', ha='left',color=color3)
-        ax.text(x=1.75, y=6.5 - (0.4 * row)  , s=round(d['Duration'],2), va='center', ha='left',color=color3)
-        ax.text(x=3.15, y=6.5 - (0.4 * row), s=d['Peak date'].date(), va='center', ha='left',color=color3)
-        ax.text(x=4.9,  y=6.5 - (0.4 * row), s=d['Valley date'].date(), va='center', ha='left',color=color3)
-        ax.text(x=6.75, y=6.5 - (0.4 * row), s=d['Recovery Date'].date(), va='center', ha='left',color=color3)
-    ax.axis('off')
-    return ax
-
 def plot_stress_events(returns,dark,ax=None,**kwargs):
     if ax is None:
         fig, ax = plt.subplots(figsize=(0.7,0.7))
@@ -1377,7 +1296,6 @@ def plot_stress_events(returns,dark,ax=None,**kwargs):
 
 def plot_montecarlo_odds(result, dd_result, ax=None, **kwargs):
     all_data = mc_perf_probs(result,dd_result).reset_index()
-    print(all_data)
     if ax is None:
         fig, ax = plt.subplots(figsize=(3,3))
 
